@@ -20,7 +20,17 @@ enum ModelState: Equatable {
 
 struct ContentView: View {
     @State private var config = GenerationConfig(maxNewTokens: 20)
-    @State private var prompt = "Write a poem about Valencia\n"
+    @State private var prompt = """
+                                Below is an instruction that describes a task.
+                                Write a response that appropriately completes the request.
+
+
+                                ### Instruction:
+                                how can I become more healthy?
+
+                                ### Response:
+                                
+                                """
     @State private var modelURL: URL? = nil
     @State private var languageModel: LanguageModel? = nil
     
@@ -36,8 +46,10 @@ struct ContentView: View {
         Task.init {
             do {
                 languageModel = try await ModelLoader.load(url: modelURL)
+                
                 if let config = languageModel?.defaultGenerationConfig { self.config = config }
                 status = .ready(nil)
+              
             } catch {
                 print("No model could be loaded: \(error)")
                 status = .noModel
@@ -57,6 +69,7 @@ struct ContentView: View {
             Task { @MainActor in
                 // Temporary hack to remove start token returned by llama tokenizers
                 var response = currentGeneration.deletingPrefix("<s> ")
+               
                 
                 // Strip prompt
                 guard response.count > prompt.count else { return }
@@ -64,7 +77,7 @@ struct ContentView: View {
                 
                 // Format prompt + response with different colors
                 var styledPrompt = AttributedString(prompt)
-                styledPrompt.foregroundColor = .black
+                styledPrompt.foregroundColor = .primary
                 
                 var styledOutput = AttributedString(response)
                 styledOutput.foregroundColor = .accentColor
@@ -114,18 +127,25 @@ struct ContentView: View {
             ProgressView(value: progress).controlSize(.small).progressViewStyle(.circular).padding(.trailing, 6)
         }
     }
+    
+    
+    @ViewBuilder
+    var loadButton : some View{
+        Button(action: modelDidChange) { Label("Load Compiled Model", systemImage: "clock.fill") }
+            .keyboardShortcut("l",modifiers: [.command])
+    }
 
     
     var body: some View {
         NavigationSplitView {
             VStack {
                 ControlView(prompt: prompt, config: $config, model: $languageModel, modelURL: $modelURL)
-                StatusView(status: $status)
+                
             }
             .navigationSplitViewColumnWidth(min: 250, ideal: 300)
         } detail: {
             GeometryReader { geometry in
-                VStack {
+                HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Your input (use format appropriate for the model you are using)")
                             .font(.caption)
@@ -136,14 +156,17 @@ struct ContentView: View {
                             .fontDesign(.rounded)
                             .scrollContentBackground(.hidden)
                             .multilineTextAlignment(.leading)
+                            
+                            .frame(minWidth: geometry.size.width/2 * 0.9,minHeight: geometry.size.height * 0.90 ,alignment: Alignment(horizontal: .leading, vertical: .top))
                             .padding(.all, 4)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                             )
+                            .autocorrectionDisabled()
                     }
-                    .frame(height: 100)
-                    .padding(.bottom, 16)
+//                    .frame(height: 100)
+//                    .padding(.bottom, 16)
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Language Model Output")
@@ -151,11 +174,11 @@ struct ContentView: View {
                             .foregroundColor(.gray)
 
                         Text(outputText)
-                            .font(.system(size: 14))
+                            .font(.body)
                             .foregroundColor(.blue)
                             .multilineTextAlignment(.leading)
                             .lineLimit(nil)
-                            .frame(minWidth: geometry.size.width - 44, minHeight: 200, alignment: Alignment(horizontal: .leading, vertical: .top))
+                            .frame(minWidth: geometry.size.width/2 * 0.9,minHeight: geometry.size.height * 0.90 ,alignment: Alignment(horizontal: .leading, vertical: .top))
                             .padding(.all, 4)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
@@ -168,26 +191,39 @@ struct ContentView: View {
                 }
                 .padding()
                 .toolbar {
+                   
                     ToolbarItem(placement: .primaryAction) {
-                        runButton
+                      
+                            
+                            runButton
+                        
                     }
+                    ToolbarItem(placement: .primaryAction) {
+                      
+                            
+                            loadButton
+                        
+                    }
+                    
                 }
             }
-            .navigationTitle("Language Model Tester")
-        }.onAppear {
-            modelDidChange()
+            .navigationTitle( String(languageModel?.modelName ?? "Language Model Tester" ))
+            StatusView(status: $status)
         }
-        .onChange(of: modelURL) { model in
+//         .onAppear {
+//             modelDidChange()
+//         }
+        .onChange(of: modelURL) { _ in
             modelDidChange()
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(clearTriggered: .constant(false))
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView(clearTriggered: .constant(false))
+//    }
+//}
 
 extension String {
     func deletingPrefix(_ prefix: String) -> String {

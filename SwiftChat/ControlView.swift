@@ -64,7 +64,7 @@ struct ControlView: View {
                             CFloat(config.maxNewTokens)
                         } set: {
                             config.maxNewTokens = Int($0)
-                        }, in: CFloat(1)...CFloat(model?.maxContextLength ?? 128), step: 1) {
+                        }, in: CFloat(1)...CFloat(model?.maxContextLength ?? 4096), step: 1) {
                             Text("Maximum Length")
                             Spacer()
                             Text("\(Int(config.maxNewTokens))")
@@ -134,7 +134,13 @@ struct ControlView: View {
                         .fileImporter(isPresented: $showFilePicker, allowedContentTypes: [.item], allowsMultipleSelection: false) { result in
                             switch result {
                             case .success(let urls):
-                                modelURL = urls.first
+                                if  let url: URL = urls.first {
+                                    if url.startAccessingSecurityScopedResource(){
+                                        modelURL = urls.first
+                                    }
+                                }
+                                
+                                
                             case .failure(let error):
                                 print("Import failed: \(error.localizedDescription)")
                             }

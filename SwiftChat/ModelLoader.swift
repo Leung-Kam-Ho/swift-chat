@@ -10,10 +10,11 @@ import Path
 import Models
 
 class ModelLoader {
-    static let models = Path.applicationSupport / "hf-compiled-transformers"
+    static let models = Path.applicationSupport / "swiftChat-compiled-transformers"
     static let lastCompiledModel = models / "last-model.mlmodelc"
         
     static func load(url: URL?) async throws -> LanguageModel {
+       
         if let url = url {
             print("Compiling model \(url)")
             let compiledURL = try await MLModel.compileModel(at: url)
@@ -21,6 +22,8 @@ class ModelLoader {
             // Cache compiled (keep last one only)
             try models.delete()
             let compiledPath = models / url.deletingPathExtension().appendingPathExtension("mlmodelc").lastPathComponent
+//            let compiledPath = lastCompiledModel
+        
             try ModelLoader.models.mkdir(.p)
             try Path(url: compiledURL)?.move(to: compiledPath, overwrite: true)
             
@@ -30,7 +33,8 @@ class ModelLoader {
         
         // Load last model used (or the one we just compiled)
         let lastURL = try lastCompiledModel.readlink().url
-        return try LanguageModel.loadCompiled(url: lastURL, computeUnits: .cpuAndGPU)
+//        try print(lastCompiledModel.readlink())
+        return try LanguageModel.loadCompiled(url: lastURL, computeUnits: .all)
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0018B8DE2A93D1AA003E44B0 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0018B8DD2A93D1AA003E44B0 /* AppIcon.icns */; };
 		EB2E91A72A06A45A00FA3ACE /* Transformers in Frameworks */ = {isa = PBXBuildFile; productRef = EB2E91A62A06A45A00FA3ACE /* Transformers */; };
 		EB545ED82A0AC32A00C8A5BD /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB545ED72A0AC32A00C8A5BD /* StatusView.swift */; };
 		EB57105F2A05962F00BA569B /* Path in Frameworks */ = {isa = PBXBuildFile; productRef = EB57105E2A05962F00BA569B /* Path */; };
@@ -40,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0018B8DD2A93D1AA003E44B0 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
+		0019D9E02A930F5800822BC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EB545ED72A0AC32A00C8A5BD /* StatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		EB90085C2A02C53100B321C4 /* ControlView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlView.swift; sourceTree = "<group>"; };
 		EB9008682A0578C300B321C4 /* ModelLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoader.swift; sourceTree = "<group>"; };
@@ -107,6 +110,8 @@
 		EBE1152D2A02AECC000A0CF4 /* SwiftChat */ = {
 			isa = PBXGroup;
 			children = (
+				0018B8DD2A93D1AA003E44B0 /* AppIcon.icns */,
+				0019D9E02A930F5800822BC9 /* Info.plist */,
 				EBE1152E2A02AECC000A0CF4 /* SwiftChatApp.swift */,
 				EB90085C2A02C53100B321C4 /* ControlView.swift */,
 				EBE115302A02AECC000A0CF4 /* ContentView.swift */,
@@ -260,6 +265,7 @@
 			files = (
 				EBE115372A02AECD000A0CF4 /* Preview Assets.xcassets in Resources */,
 				EBE115332A02AECD000A0CF4 /* Assets.xcassets in Resources */,
+				0018B8DE2A93D1AA003E44B0 /* AppIcon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +458,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DynamicLLM;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Load Model";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -462,10 +472,14 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.huggingface.SwiftChat;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = KamHoSwiftChat;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = KamHoSwiftChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -489,6 +503,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SwiftChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DynamicLLM;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Load Model";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -499,10 +517,14 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.huggingface.SwiftChat;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = KamHoSwiftChat;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = KamHoSwiftChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
