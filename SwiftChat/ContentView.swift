@@ -9,6 +9,7 @@
 import SwiftUI
 import Generation
 import Models
+import Path
 
 enum ModelState: Equatable {
     case noModel
@@ -39,6 +40,57 @@ struct ContentView: View {
     
     @Binding var clearTriggered: Bool
     
+    func findCompiledModel() -> [String]?{
+        let fm = FileManager.default
+        let path = ModelLoader.models.string
+        do {
+            let items = try fm.contentsOfDirectory(atPath: path)
+            var filteredFile = [String]()
+            for i in items{
+                if i.contains(".mlmodelc"){
+                    filteredFile.append(i)
+                }
+            }
+            return filteredFile
+            
+        } catch {
+            // failed to read directory – bad permissions, perhaps?
+            
+            
+        }
+        return nil
+    }
+    func rmSelectedModel(url : URL){
+        let fm = FileManager.default
+        let path = ModelLoader.models.string
+        do {
+             try fm.removeItem(at: url)
+        
+            
+        } catch {
+            // failed to read directory – bad permissions, perhaps?
+            print(error)
+            
+        }
+    }
+    func loadSelectedModel(url : URL){
+        guard status != .loading else { return }
+        
+        status = .loading
+        Task.init {
+            do {
+                languageModel = try await ModelLoader.load(compiledURL: url.deletingPathExtension().appendingPathExtension("mlmodelc"))
+                
+                if let config = languageModel?.defaultGenerationConfig { self.config = config }
+                status = .ready(nil)
+              
+            } catch {
+                print("No model could be loaded: \(error)")
+                status = .noModel
+            }
+
+        }
+    }
     func modelDidChange() {
         guard status != .loading else { return }
         
@@ -131,8 +183,55 @@ struct ContentView: View {
     
     @ViewBuilder
     var loadButton : some View{
-        Button(action: modelDidChange) { Label("Load Compiled Model", systemImage: "clock.fill") }
-            .keyboardShortcut("l",modifiers: [.command])
+        
+
+        Menu {
+            if let models = findCompiledModel(){
+                ForEach(models, id:\.self){ filename in
+                    let filePath = ModelLoader.models
+                    let url = (DynamicPath(filePath) / filename).url
+                    Button(action: {
+                        loadSelectedModel(url: url )
+                    }) {
+                        Text(filename)
+                    }
+                    
+                }
+            }
+            
+            
+                
+        } label: {
+            Label("Load Compiled Model", systemImage: "clock.fill")
+        }
+//        .keyboardShortcut("l",modifiers: [.command])
+        
+    }
+    @ViewBuilder
+    var deleteButton : some View{
+        
+
+        Menu {
+            if let models = findCompiledModel(){
+                ForEach(models, id:\.self){ filename in
+                    let filePath = ModelLoader.models
+                    let url = (DynamicPath(filePath) / filename).url
+                    Button(action: {
+                        rmSelectedModel(url: url )
+                    }) {
+                        Text(filename)
+                    }
+                    
+                }
+            }
+            
+            
+                
+        } label: {
+            Label("Delete Model", systemImage: "trash.fill").foregroundStyle(.red)
+        }
+//        .keyboardShortcut("l",modifiers: [.command])
+        
     }
 
     
@@ -204,15 +303,19 @@ struct ContentView: View {
                             loadButton
                         
                     }
+                    ToolbarItem(placement: .primaryAction) {
+                      
+                            
+                            deleteButton
+                        
+                    }
                     
                 }
             }
             .navigationTitle( String(languageModel?.modelName ?? "Language Model Tester" ))
             StatusView(status: $status)
         }
-//         .onAppear {
-//             modelDidChange()
-//         }
+         
         .onChange(of: modelURL) { _ in
             modelDidChange()
         }

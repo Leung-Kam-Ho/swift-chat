@@ -135,6 +135,7 @@ struct ControlView: View {
                             switch result {
                             case .success(let urls):
                                 if  let url: URL = urls.first {
+                                    print(url)
                                     if url.startAccessingSecurityScopedResource(){
                                         modelURL = urls.first
                                     }
